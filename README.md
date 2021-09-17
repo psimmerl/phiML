@@ -4,8 +4,6 @@
 ## Dataset
 
 * skim8 (should switch to GEMC and use skim8 as the test dataset)
-* phi candidates - 18168 (0.05%)
-* Total num of events - 36,988,680 (too small... missing factor of 10 or something)
 
 |  Type  |  Count  | Percent |
 | ------ | ------- | ------- |
@@ -20,13 +18,13 @@
 ### Preprocessing
 
 * Require 1 *e p kp km*
-    * should probably do this because we want to look at ***exclusive*** phi
+    * should probably do this because we want to look at ***exclusive*** phi?
 
 * Require forward detector
-    * should probably also do this because the different calibration metrics will make the convergence take longer and probably be less accurate
+    * should probably also do this because the different calibration metrics will make the convergence take longer and probably be less accurate?
 
 * Do I need to downsample to account for the unequal priors
-    * currently have P(phi)=2/3 * P(backgroung)
+    * currently have P(phi)=2/3 * P(background)
 
 
 ### Features
@@ -52,7 +50,6 @@
 
 # Preliminary Results
 
-
 * Data: **skim8**
     * Used wagon to find phi
     * background:
@@ -61,10 +58,7 @@
         * required all in FD
 * Features:
     * px, py, pz, vz for each e, p, kp, km (16 feats total)
-    * StandardScaler
-    * required at least 1 epkpkm
-        * if there are multiple epkpkm I take the last set (need to fix/decide how to fix)
-    * required all in FD
+    * StandardScaler (mean shifted to 0 and variance normalized to 1)
 
 ## Ensemble Methods:
 * 3-fold cross validation on 
