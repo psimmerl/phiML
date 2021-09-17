@@ -12,6 +12,7 @@
 | Phi    | 18,168  | 0.005% |
 | epkpkm | 298,978 | 0.081% |
 | Total  | 369,885,938 |    |
+
 *required at least 1 epkpkm and FD
 
 
@@ -51,29 +52,46 @@
 
 # Preliminary Results
 
-Using:
 
-* epochs = 100
-* batch size = 16
-* final activation: sigmoid
 * Data: **skim8**
     * Used wagon to find phi
     * background:
         * required at least 1 epkpkm
             * if there are multiple epkpkm I take the last set (need to fix/decide how to fix)
         * required all in FD
-* Train
-    * 12063 background
-    * 8123 phi
-* Validation:
-    * 6082 background
-    * 4012 phi
 * Features:
     * px, py, pz, vz for each e, p, kp, km (16 feats total)
     * StandardScaler
     * required at least 1 epkpkm
         * if there are multiple epkpkm I take the last set (need to fix/decide how to fix)
     * required all in FD
+
+## Ensemble Methods:
+* 3-fold cross validation on 
+    * 18145 background
+    * 12135 phi
+* Still need to try XGBoost
+* Need to hyperparameter tune 
+
+| Model | Acc Ave | Acc Std Dev | AUC Ave | AUC Std Dev |
+| ----- | ------- | ----------- | ------- | ----------- |
+| AdaBoost | 0.838 | 0.001 | 0.905 | 0.001 |
+| Gradient Boost | 0.846 | 0.003 | 0.917 | 0.003 |
+| Random Forest | 0.854 | 0.002 | 0.922 | 0.002 |
+
+
+
+## Deep Neural Net:
+* epochs = 100
+* batch size = 16
+* hidden activation: relu
+* final activation: sigmoid
+* Train
+    * 12063 background
+    * 8123 phi
+* Validation:
+    * 6082 background
+    * 4012 phi
 
 | Layers | Batch Norm | Dropout | Train Loss | Train Acc. | Train AUC | Val Loss | Val Acc. | Val AUC |
 | ------ | ---------- | ------- | ---------- | ---------- | --------- | -------- | -------- | ------- |
@@ -101,3 +119,5 @@ Using:
 | (64, 64, 64, 64) | False | 0.0 | 0.346 | 0.948 | 0.971 | 0.999 | 0.865 | 0.911 |
 | (64, 64, 64, 64) | False | 0.2 | 0.213 | 0.916 | 0.964 | 0.269 | 0.902 | 0.949 |
 | (64, 64, 64, 64) | False | 0.4 | 0.230 | 0.909 | 0.958 | 0.282 | 0.901 | 0.948 |
+
+
