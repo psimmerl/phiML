@@ -3,19 +3,21 @@ import ROOT
 from sklearn.utils import resample
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-random_state = 42
+import joblib
+
 '''
 I won't be able to fit all 174 files into RAM so I'll need to build a custom generator such as 
 https://medium.com/@mrgarg.rajat/training-on-large-datasets-that-dont-fit-in-memory-in-keras-60a974785d71
 '''
 
+random_state = 42
 
-
-def preprocess(fPhi, fTotal) -> None:
+def preprocess(fPhi, fTotal, rsmp=3/2) -> None:
     phi_df = ROOT.RDataFrame("clas12",fPhi)
     raw_df = ROOT.RDataFrame("clas12",fTotal)
 
-    print(phi_df.Count().GetValue(), raw_df.Count().GetValue())
+    print("num of phi cand:", phi_df.Count().GetValue())
+    print("num of all data:", raw_df.Count().GetValue())
 
     print(phi_df.GetColumnNames())
     print(raw_df.GetColumnNames())
@@ -62,15 +64,22 @@ def preprocess(fPhi, fTotal) -> None:
 
     bg = bg[1:]
 
-    bg_res = resample(bg, n_samples=int(len(phi)*3/2), random_state=random_state)
-    X = np.vstack((phi, bg_res))
-    y = np.append(np.ones(len(phi)), np.zeros(len(bg_res)))
+    if rsmp > 0 and rsmp < len(bg)/len(phi):
+        bg = resample(bg, n_samples=int(len(phi)*rsmp), random_state=random_state)
+    print(f'num of phi cand = {len(phi)}')
+    print(f'num of bg noise = {len(bg)}')
+    print(f'      imbalance = {len(bg)/len(phi):.0f} bg/phi')
+
+    X = np.vstack((phi, bg))
+    y = np.append(np.ones(len(phi)), np.zeros(len(bg)))
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=2/3, random_state=random_state)
-
+    print()
     scl = StandardScaler()
     X_train = scl.fit_transform(X_train)
     X_test = scl.transform(X_test)
+
+    joblib.dump(scl, 'data/scaler.gz')
 
     with open('data/processed/X_train.npy', 'wb') as f:
         np.save(f, X_train)

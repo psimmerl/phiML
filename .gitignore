@@ -1,3 +1,5 @@
 *.root
 *.hipo
 *.npy
+logs/*
+models/DNN_search/*

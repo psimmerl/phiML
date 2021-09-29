@@ -2,7 +2,7 @@ import numpy as np
 from modules.models import phiDNN
 from modules.data import preprocess
 
-# preprocess("data/raw/DVPhiWagon_ntuple_inbex.root", "data/raw/skim8_epkpkm.root")
+# preprocess("data/raw/DVPhiWagon_ntuple_inb.root", "data/raw/skim8_epkpkm.root")
 
 with open('data/processed/X_train.npy', 'rb') as f:
     X_train = np.load(f)
